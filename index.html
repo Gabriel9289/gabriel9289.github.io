@@ -1,0 +1,354 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gabriel Mongwane — Backend Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --border: #1e1e2e;
+      --accent: #00ff88; --accent2: #0088ff;
+      --text: #e2e2f0; --muted: #6b6b8a; --card: #13131c;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 16px;
+      line-height: 1.7; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 2rem;
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Space Mono', monospace; font-size: 1rem;
+      color: var(--accent); text-decoration: none; letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    section {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto; padding: 6rem 2rem;
+    }
+    #hero {
+      min-height: 100vh; display: flex;
+      flex-direction: column; justify-content: center; padding-top: 5rem;
+    }
+    .hero-tag {
+      display: inline-block; font-family: 'Space Mono', monospace;
+      font-size: 0.8rem; color: var(--accent);
+      border: 1px solid rgba(0,255,136,0.3);
+      padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 600;
+      line-height: 1.1; letter-spacing: -0.02em;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 span { color: var(--accent); }
+    .hero-sub {
+      margin-top: 1.5rem; font-size: 1.15rem; color: var(--muted);
+      max-width: 560px; animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; margin-top: 2.5rem;
+      flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.6rem; font-size: 0.95rem; font-weight: 500;
+      border-radius: 4px; text-decoration: none;
+      transition: all 0.2s; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--accent); color: #0a0a0f; }
+    .btn-primary:hover { background: #00cc6e; transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .hero-stats {
+      display: flex; gap: 3rem; margin-top: 4rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.4s ease both; flex-wrap: wrap;
+    }
+    .stat-num { font-family: 'Space Mono', monospace; font-size: 2rem; color: var(--accent); font-weight: 700; }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+    .section-label {
+      font-family: 'Space Mono', monospace; font-size: 0.75rem;
+      color: var(--accent); letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 600;
+      letter-spacing: -0.02em; margin-bottom: 3rem;
+    }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.75rem; transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .project-card:hover { border-color: rgba(0,255,136,0.2); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .project-card:hover::before { opacity: 1; }
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .project-icon { font-size: 1.5rem; }
+    .project-links { display: flex; gap: 0.75rem; }
+    .project-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.8rem; font-family: 'Space Mono', monospace;
+      padding: 0.25rem 0.6rem; border: 1px solid var(--border);
+      border-radius: 3px; transition: all 0.2s;
+    }
+    .project-links a:hover { color: var(--accent); border-color: var(--accent); }
+    .project-links a.live { color: var(--accent); border-color: rgba(0,255,136,0.4); }
+    .project-name { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+    .project-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.25rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      padding: 0.2rem 0.55rem; background: rgba(0,255,136,0.06);
+      color: var(--accent); border-radius: 3px; border: 1px solid rgba(0,255,136,0.15);
+    }
+    .tag.blue { background: rgba(0,136,255,0.06); color: var(--accent2); border-color: rgba(0,136,255,0.15); }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .skill-group { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+    .skill-group-title {
+      font-family: 'Space Mono', monospace; font-size: 0.75rem;
+      color: var(--accent); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .skill-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .skill-list li { font-size: 0.9rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+    .skill-list li::before { content: '▸'; color: var(--accent); font-size: 0.7rem; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; font-size: 1rem; }
+    .about-text p strong { color: var(--text); }
+    .about-highlights { display: flex; flex-direction: column; gap: 1rem; }
+    .highlight-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem; border-radius: 0 6px 6px 0;
+    }
+    .highlight-item strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .highlight-item span { font-size: 0.85rem; color: var(--muted); }
+    .contact-wrapper {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 3rem; text-align: center;
+      max-width: 600px; margin: 0 auto;
+    }
+    .contact-wrapper h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .contact-wrapper p { color: var(--muted); margin-bottom: 2rem; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    footer {
+      position: relative; z-index: 1; text-align: center;
+      padding: 2rem; border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 0.85rem; font-family: 'Space Mono', monospace;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) {
+      nav { padding: 1rem; } .nav-links { gap: 1rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-stats { gap: 2rem; } .contact-wrapper { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 480px) { .nav-links { display: none; } h1 { font-size: 2.2rem; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#hero" class="nav-logo">GM_</a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <section id="hero">
+    <span class="hero-tag">// available for work</span>
+    <h1>Gabriel<br><span>Mongwane</span></h1>
+    <p class="hero-sub">Self-taught backend developer from Hazyview, South Africa. I build REST APIs with Python, FastAPI and PostgreSQL — structured, secure, and actually deployed.</p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View my work</a>
+      <a href="https://github.com/Gabriel9289" target="_blank" class="btn btn-outline">GitHub</a>
+      <a href="#contact" class="btn btn-outline">Contact me</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">24+</div><div class="stat-label">Projects built</div></div>
+      <div><div class="stat-num">2</div><div class="stat-label">Live deployments</div></div>
+      <div><div class="stat-num">CS50</div><div class="stat-label">Harvard certified</div></div>
+      <div><div class="stat-num">SA</div><div class="stat-label">Based in Hazyview</div></div>
+    </div>
+  </section>
+  <section id="projects">
+    <p class="section-label reveal">// what I've built</p>
+    <h2 class="section-title reveal">Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">🏫</span>
+          <div class="project-links">
+            <a href="https://school-system-9po7.onrender.com/docs" target="_blank" class="live">Live</a>
+            <a href="https://github.com/Gabriel9289/School-System-API" target="_blank">GitHub</a>
+          </div>
+        </div>
+        <div class="project-name">School System API</div>
+        <div class="project-desc">Full role-based school management system. Principals, teachers, parents and students each see only what they need. OTP attendance, marks tracking, and a principal dashboard.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">JWT</span><span class="tag">RBAC</span><span class="tag">SQLAlchemy</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">🏥</span>
+          <div class="project-links">
+            <a href="https://clinic-system-7yv8.onrender.com/docs" target="_blank" class="live">Live</a>
+            <a href="https://github.com/Gabriel9289" target="_blank">GitHub</a>
+          </div>
+        </div>
+        <div class="project-name">Clinic Booking API</div>
+        <div class="project-desc">Appointment management system for clinics. Doctors set availability, patients book slots, and a full approval workflow handles pending, adjusted, confirmed and completed states.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">JWT</span><span class="tag">State Machine</span><span class="tag">SQLAlchemy</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">🎬</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Obsidian</div>
+        <div class="project-desc">Netflix-inspired streaming platform with ML-powered recommendations using TF-IDF cosine similarity. Subscription tiers, multiple profiles, watch history and admin panel.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag blue">scikit-learn</span><span class="tag blue">ML</span><span class="tag">Subscriptions</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">🔐</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Cipher</div>
+        <div class="project-desc">WhatsApp-inspired real-time messaging. 1-on-1 and group chats, WebSocket rooms, Redis presence system with TTL heartbeats, read receipts and unread counts.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag blue">WebSockets</span><span class="tag blue">Redis</span><span class="tag">Real-time</span><span class="tag">PostgreSQL</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">𝕏</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Nexus</div>
+        <div class="project-desc">Twitter/X-inspired social platform. Real-time feed via WebSockets, live notifications, automatic hashtag extraction, trending topics and full social interactions.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag blue">WebSockets</span><span class="tag">Social Graph</span><span class="tag">Real-time</span><span class="tag">PostgreSQL</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">📸</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Luminary</div>
+        <div class="project-desc">Instagram-inspired photo platform. Server-side image compression with Pillow, 24-hour stories with background task cleanup, hashtags, DMs and full social features.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag blue">Pillow</span><span class="tag blue">Background Tasks</span><span class="tag">PostgreSQL</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">👥</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Agora</div>
+        <div class="project-desc">Facebook-inspired social network. Mutual friendship system, post privacy levels, groups, events with RSVP, marketplace listings and a full notifications system.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">Friend Graph</span><span class="tag">Privacy System</span><span class="tag">PostgreSQL</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">📺</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">StreamVault</div>
+        <div class="project-desc">YouTube-inspired video platform. Video upload with metadata, full-text search, like system, comments, channel subscriptions and view count tracking.</div>
+        <div class="project-tags"><span class="tag">FastAPI</span><span class="tag">File Uploads</span><span class="tag">Full-text Search</span><span class="tag">PostgreSQL</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">📊</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Price Monitor</div>
+        <div class="project-desc">Automated price monitoring service that scrapes book prices, stores them locally, and exposes the data through a REST API with manual refresh control.</div>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag blue">Web Scraping</span><span class="tag">Automation</span></div>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-header"><span class="project-icon">🗂️</span>
+          <div class="project-links"><a href="https://github.com/Gabriel9289" target="_blank">GitHub</a></div>
+        </div>
+        <div class="project-name">Smart File Organizer</div>
+        <div class="project-desc">Python CLI tool that automatically organises files into categorised subfolders by type. Dry-run mode, duplicate protection and support for 30+ file extensions.</div>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">CLI</span><span class="tag">Automation</span><span class="tag">File System</span></div>
+      </div>
+    </div>
+  </section>
+  <section id="skills">
+    <p class="section-label reveal">// what I work with</p>
+    <h2 class="section-title reveal">Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-group reveal"><div class="skill-group-title">Backend</div><ul class="skill-list"><li>Python</li><li>FastAPI</li><li>Flask</li><li>REST APIs</li><li>WebSockets</li></ul></div>
+      <div class="skill-group reveal"><div class="skill-group-title">Database</div><ul class="skill-list"><li>PostgreSQL</li><li>SQLAlchemy</li><li>SQLite</li><li>Redis</li><li>Supabase</li></ul></div>
+      <div class="skill-group reveal"><div class="skill-group-title">Auth & Security</div><ul class="skill-list"><li>JWT Authentication</li><li>bcrypt</li><li>RBAC</li><li>OAuth2</li><li>HTTPBearer</li></ul></div>
+      <div class="skill-group reveal"><div class="skill-group-title">Frontend</div><ul class="skill-list"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Vanilla JS</li><li>Responsive Design</li></ul></div>
+      <div class="skill-group reveal"><div class="skill-group-title">Tools</div><ul class="skill-list"><li>Git & GitHub</li><li>Render</li><li>Railway</li><li>VS Code</li><li>psql</li></ul></div>
+      <div class="skill-group reveal"><div class="skill-group-title">Other</div><ul class="skill-list"><li>C</li><li>scikit-learn</li><li>Pillow</li><li>Web Scraping</li><li>Automation</li></ul></div>
+    </div>
+  </section>
+  <section id="about">
+    <p class="section-label reveal">// who I am</p>
+    <h2 class="section-title reveal">About</h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I'm a <strong>self-taught backend developer</strong> based in Hazyview, South Africa. I started with Harvard's CS50 and haven't stopped building since.</p>
+        <p>I focus on backend systems — APIs that are <strong>structured, secure, and actually work</strong>. Not tutorial projects. Real systems with authentication, role-based access, databases, and deployment.</p>
+        <p>I built a school management system, a clinic booking API, and six full-stack platform clones covering real-time features, image processing, ML recommendations, and subscription systems.</p>
+        <p>I'm <strong>available immediately</strong> for remote junior backend or full-stack roles. Open to permanent, contract, or freelance work.</p>
+      </div>
+      <div class="about-highlights reveal">
+        <div class="highlight-item"><strong>CS50 — Harvard University</strong><span>Completed 2025 · Introductory Computer Science</span></div>
+        <div class="highlight-item"><strong>24+ Projects on GitHub</strong><span>Including 2 live deployed APIs</span></div>
+        <div class="highlight-item"><strong>Based in Hazyview, South Africa</strong><span>Available for remote work globally</span></div>
+        <div class="highlight-item"><strong>Available Immediately</strong><span>Ready to start from date of notice</span></div>
+      </div>
+    </div>
+  </section>
+  <section id="contact">
+    <p class="section-label reveal">// get in touch</p>
+    <h2 class="section-title reveal">Contact</h2>
+    <div class="contact-wrapper reveal">
+      <h3>Let's work together</h3>
+      <p>I'm looking for my first professional role. If you're hiring or have a project in mind, reach out.</p>
+      <div class="contact-links">
+        <a href="mailto:gabrielmongwane96@gmail.com" class="btn btn-primary">Email me</a>
+        <a href="https://github.com/Gabriel9289" target="_blank" class="btn btn-outline">GitHub</a>
+      </div>
+    </div>
+  </section>
+  <footer><p>Built by Gabriel Mongwane · Hazyview, South Africa · 2025</p></footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
+HTMLEOF
